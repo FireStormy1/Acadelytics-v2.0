@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d1117" />
+  <title>Acadelytics — Academic Analytics Platform</title>
+  <meta name="description" content="Silicon University SGPA & CGPA Calculator with analytics, predictions, and academic tools." />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="Acadelytics" />
+  <meta property="og:description" content="Smart academic tools for Siliconites." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="./assets/opengraph.jpg" />
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Acadelytics",
+    "description": "Silicon University SGPA and CGPA Calculator",
+    "applicationCategory": "EducationApplication",
+    "operatingSystem": "Web"
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     PRINT OVERLAY (hidden normally)
+════════════════════════════════════════ -->
+<div id="printOverlay" class="print-only">
+  <div class="print-header">
+    <h1>Acadelytics — Academic Report</h1>
+    <p id="printDate"></p>
+  </div>
+  <div id="printContent"></div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     NAVBAR
+════════════════════════════════════════ -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="brand">
+      <span class="brand-icon">⚡</span>
+      Acadelytics
+    </div>
+
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <div class="nav-links" id="navLinks">
+      <button class="nav-link active" data-section="home">
+        <i class="fa-solid fa-house"></i><span>Home</span>
+      </button>
+      <button class="nav-link" data-section="sgpa">
+        <i class="fa-solid fa-calculator"></i><span>SGPA</span>
+      </button>
+      <button class="nav-link" data-section="cgpa">
+        <i class="fa-solid fa-chart-line"></i><span>CGPA</span>
+      </button>
+      <button class="nav-link" data-section="tools">
+        <i class="fa-solid fa-wrench"></i><span>Tools</span>
+      </button>
+      <button class="nav-link" data-section="about">
+        <i class="fa-solid fa-user"></i><span>About</span>
+      </button>
+    </div>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <i class="fa-solid fa-moon" id="themeIcon"></i>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     MAIN
+════════════════════════════════════════ -->
+<main class="container">
+
+  <!-- ══════════════ HOME / DASHBOARD ══════════════ -->
+  <section id="homeSection" class="page-section">
+
+    <!-- Hero -->
+    <div class="hero-card">
+      <span class="hero-badge">Built for Siliconites, by a Siliconite</span>
+      <h1>Every Grade<br/>Tells a Story</h1>
+      <p class="hero-text">
+        Your complete academic analytics platform. Calculate SGPA, track performance,
+        predict your CGPA target, and stay ahead of your academic journey.
+      </p>
+      <div class="hero-actions">
+        <button class="btn-primary" data-nav="sgpa">
+          <i class="fa-solid fa-calculator"></i> SGPA Calculator
+        </button>
+        <button class="btn-secondary" data-nav="tools">
+          <i class="fa-solid fa-wrench"></i> Academic Tools
+        </button>
+      </div>
+    </div>
+
+    <!-- Dashboard Stats -->
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card" id="statCgpa">
+        <div class="stat-icon green"><i class="fa-solid fa-graduation-cap"></i></div>
+        <div class="stat-body">
+          <p class="stat-label">Current CGPA</p>
+          <h2 class="stat-value" id="dashCgpa">—</h2>
+          <p class="stat-sub" id="dashCgpaLabel">No data yet</p>
+        </div>
+      </div>
+      <div class="stat-card" id="statCredits">
+        <div class="stat-icon blue"><i class="fa-solid fa-book"></i></div>
+        <div class="stat-body">
+          <p class="stat-label">Total Credits</p>
+          <h2 class="stat-value" id="dashCredits">—</h2>
+          <p class="stat-sub" id="dashCreditsLabel">Across all semesters</p>
+        </div>
+      </div>
+      <div class="stat-card" id="statBest">
+        <div class="stat-icon gold"><i class="fa-solid fa-trophy"></i></div>
+        <div class="stat-body">
+          <p class="stat-label">Best Semester</p>
+          <h2 class="stat-value" id="dashBest">—</h2>
+          <p class="stat-sub" id="dashBestLabel">No records yet</p>
+        </div>
+      </div>
+      <div class="stat-card" id="statLatest">
+        <div class="stat-icon purple"><i class="fa-solid fa-clock-rotate-left"></i></div>
+        <div class="stat-body">
+          <p class="stat-label">Latest Semester</p>
+          <h2 class="stat-value" id="dashLatest">—</h2>
+          <p class="stat-sub" id="dashLatestLabel">No records yet</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trend Chart -->
+    <div class="card chart-card" id="chartCard">
+      <div class="card-head">
+        <h3 class="card-title"><i class="fa-solid fa-chart-area"></i> SGPA Trend</h3>
+        <button class="btn-ghost" id="clearHistoryBtn">
+          <i class="fa-solid fa-trash"></i> Clear History
+        </button>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="trendChart" height="220"></canvas>
+        <div class="chart-empty" id="chartEmpty">
+          <i class="fa-solid fa-chart-area fa-2x"></i>
+          <p>Add semester results to see your SGPA trend</p>
+          <button class="btn-primary" data-nav="sgpa">Calculate SGPA</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Semester History -->
+    <div class="card" id="historyCard">
+      <div class="card-head">
+        <h3 class="card-title"><i class="fa-solid fa-history"></i> Semester History</h3>
+      </div>
+      <div id="semesterHistory">
+        <div class="empty-state">
+          <i class="fa-solid fa-book-open fa-2x"></i>
+          <p>No semester records saved yet.</p>
+          <p class="muted">Calculate an SGPA to save it here.</p>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══════════════ SGPA CALCULATOR ══════════════ -->
+  <section id="sgpaSection" class="page-section hidden">
+
+    <div class="section-header">
+      <h1>SGPA Calculator</h1>
+      <p>Calculate your semester GPA quickly and accurately.</p>
+    </div>
+
+    <!-- Branch -->
+    <div class="card">
+      <h3 class="card-title"><i class="fa-solid fa-code-branch"></i> Branch</h3>
+      <div class="chip-group" id="branchContainer">
+        <button class="chip branch-chip" data-branch="cse">CSE</button>
+        <button class="chip branch-chip" data-branch="ece">ECE</button>
+        <button class="chip branch-chip" data-branch="eee">EEE</button>
+        <button class="chip branch-chip" data-branch="eie">EIE</button>
+        <button class="chip branch-chip" data-branch="vlsi">VLSI</button>
+        <button class="chip branch-chip" data-branch="mtech">M.Tech</button>
+      </div>
+    </div>
+
+    <!-- Semester -->
+    <div class="card">
+      <h3 class="card-title"><i class="fa-solid fa-calendar"></i> Semester</h3>
+      <div class="chip-group" id="semesterContainer">
+        <button class="chip semester-chip" data-semester="1">1</button>
+        <button class="chip semester-chip" data-semester="2">2</button>
+        <button class="chip semester-chip" data-semester="3">3</button>
+        <button class="chip semester-chip" data-semester="4">4</button>
+        <button class="chip semester-chip" data-semester="5">5</button>
+        <button class="chip semester-chip" data-semester="6">6</button>
+        <button class="chip semester-chip" data-semester="7">7</button>
+        <button class="chip semester-chip" data-semester="8">8</button>
+        <button class="chip semester-chip" data-semester="7-ps">7 PS</button>
+        <button class="chip semester-chip" data-semester="8-ps">8 PS</button>
+      </div>
+    </div>
+
+    <!-- WIP -->
+    <div id="comingSoon" class="wip-card hidden">
+      <i class="fa-solid fa-tools fa-2x"></i>
+      <h3>Work in Progress</h3>
+      <p id="comingSoonText">Support for this branch/semester is under development.</p>
+    </div>
+
+    <!-- Semester Info -->
+    <div id="semesterInfo" class="card hidden">
+      <div class="semester-info">
+        <div>
+          <h3 id="semesterTitle">—</h3>
+          <p id="subjectCount" class="muted">—</p>
+        </div>
+        <div class="credits-box">
+          <h2 id="totalCredits">0</h2>
+          <span>Credits</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subjects -->
+    <div id="subjectsCard" class="card hidden">
+      <div id="subjectsContainer"></div>
+    </div>
+
+    <!-- Error -->
+    <div id="errorMessage" class="error-box hidden"></div>
+
+    <!-- Buttons -->
+    <div id="buttonsSection" class="action-row hidden">
+      <button id="calculateBtn" class="btn-primary">
+        <i class="fa-solid fa-calculator"></i> Calculate SGPA
+      </button>
+      <button id="resetBtn" class="btn-ghost">
+        <i class="fa-solid fa-rotate-left"></i> Reset
+      </button>
+    </div>
+
+    <!-- Result -->
+    <div id="resultCard" class="result-card hidden">
+      <div class="result-glow"></div>
+      <p class="result-label">YOUR SGPA</p>
+      <h2 id="sgpaValue" class="result-value">0.00</h2>
+      <h3 id="motivationTitle"></h3>
+      <p id="motivationMessage" class="muted"></p>
+      <div class="result-actions">
+        <button id="saveToHistoryBtn" class="btn-primary">
+          <i class="fa-solid fa-bookmark"></i> Save to History
+        </button>
+        <button id="downloadPdfBtn" class="btn-secondary">
+          <i class="fa-solid fa-file-pdf"></i> Export PDF
+        </button>
+      </div>
+    </div>
+
+    <!-- Grade Scale -->
+    <div class="card">
+      <h3 class="card-title"><i class="fa-solid fa-star"></i> Grade Scale</h3>
+      <div class="grade-scale-pills">
+        <div class="grade-scale-item grade-O" title="90–100 marks">
+          <span class="gs-letter">O</span><span class="gs-pts">10 pts</span>
+        </div>
+        <div class="grade-scale-item grade-E" title="80–89 marks">
+          <span class="gs-letter">E</span><span class="gs-pts">9 pts</span>
+        </div>
+        <div class="grade-scale-item grade-A" title="70–79 marks">
+          <span class="gs-letter">A</span><span class="gs-pts">8 pts</span>
+        </div>
+        <div class="grade-scale-item grade-B" title="60–69 marks">
+          <span class="gs-letter">B</span><span class="gs-pts">7 pts</span>
+        </div>
+        <div class="grade-scale-item grade-C" title="50–59 marks">
+          <span class="gs-letter">C</span><span class="gs-pts">6 pts</span>
+        </div>
+        <div class="grade-scale-item grade-D" title="40–49 marks">
+          <span class="gs-letter">D</span><span class="gs-pts">5 pts</span>
+        </div>
+        <div class="grade-scale-item grade-U" title="Below 40">
+          <span class="gs-letter">U</span><span class="gs-pts">0 pts</span>
+        </div>
+      </div>
+      <p class="info-note"><strong>X</strong> = Debarred &nbsp;|&nbsp; <strong>W</strong> = Result Pending</p>
+    </div>
+
+  </section>
+
+  <!-- ══════════════ CGPA CALCULATOR ══════════════ -->
+  <section id="cgpaSection" class="page-section hidden">
+
+    <div class="section-header">
+      <h1>CGPA Calculator</h1>
+      <p>Compute your cumulative GPA across all semesters.</p>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title"><i class="fa-solid fa-layer-group"></i> Completed Semesters</h3>
+      <div class="chip-group" id="cgpa-semester-select">
+        <button class="chip cgpa-count" data-count="1">1</button>
+        <button class="chip cgpa-count" data-count="2">2</button>
+        <button class="chip cgpa-count" data-count="3">3</button>
+        <button class="chip cgpa-count" data-count="4">4</button>
+        <button class="chip cgpa-count" data-count="5">5</button>
+        <button class="chip cgpa-count" data-count="6">6</button>
+        <button class="chip cgpa-count" data-count="7">7</button>
+        <button class="chip cgpa-count" data-count="8">8</button>
+      </div>
+    </div>
+
+    <div id="cgpa-input-card" class="card hidden">
+      <h3 class="card-title"><i class="fa-solid fa-pen"></i> Enter SGPA Values</h3>
+      <div id="cgpa-inputs"></div>
+      <div class="action-row" style="margin-top:20px">
+        <button id="cgpa-calc-btn" class="btn-primary">
+          <i class="fa-solid fa-calculator"></i> Calculate CGPA
+        </button>
+        <button id="cgpa-reset-btn" class="btn-ghost">
+          <i class="fa-solid fa-rotate-left"></i> Reset
+        </button>
+      </div>
+    </div>
+
+    <div id="cgpa-result" class="result-card hidden">
+      <div class="result-glow"></div>
+      <p class="result-label">YOUR CGPA</p>
+      <h2 id="cgpa-value" class="result-value">0.00</h2>
+      <h3 id="cgpa-msg"></h3>
+      <p id="cgpa-submsg" class="muted"></p>
+      <div class="result-actions">
+        <button id="downloadCgpaPdfBtn" class="btn-secondary">
+          <i class="fa-solid fa-file-pdf"></i> Export Report
+        </button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══════════════ TOOLS ══════════════ -->
+  <section id="toolsSection" class="page-section hidden">
+
+    <div class="section-header">
+      <h1>Academic Tools</h1>
+      <p>Powerful calculators to help you plan your academic journey.</p>
+    </div>
+
+    <!-- Tool tabs -->
+    <div class="tool-tabs">
+      <button class="tool-tab active" data-tool="predictor">
+        <i class="fa-solid fa-bullseye"></i> CGPA Predictor
+      </button>
+      <button class="tool-tab" data-tool="planner">
+        <i class="fa-solid fa-flask"></i> Grade Planner
+      </button>
+      <button class="tool-tab" data-tool="attendance">
+        <i class="fa-solid fa-user-check"></i> Attendance
+      </button>
+      <button class="tool-tab" data-tool="gradeReq">
+        <i class="fa-solid fa-graduation-cap"></i> Grade Requirement
+      </button>
+    </div>
+
+    <!-- ── TARGET CGPA PREDICTOR ── -->
+    <div class="tool-panel" id="tool-predictor">
+      <div class="card">
+        <h3 class="card-title"><i class="fa-solid fa-bullseye"></i> Target CGPA Predictor</h3>
+        <p class="card-desc">Find out what SGPA you need in remaining semesters to hit your target CGPA.</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Current CGPA</label>
+            <input type="number" id="pred-current-cgpa" class="form-input" placeholder="e.g. 7.50" min="0" max="10" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label>Completed Credits</label>
+            <input type="number" id="pred-completed-credits" class="form-input" placeholder="e.g. 120" min="0" />
+          </div>
+          <div class="form-group">
+            <label>Remaining Credits</label>
+            <input type="number" id="pred-remaining-credits" class="form-input" placeholder="e.g. 80" min="0" />
+          </div>
+          <div class="form-group">
+            <label>Target CGPA</label>
+            <input type="number" id="pred-target-cgpa" class="form-input" placeholder="e.g. 8.00" min="0" max="10" step="0.01" />
+          </div>
+        </div>
+        <button class="btn-primary" id="predictBtn">
+          <i class="fa-solid fa-arrow-trend-up"></i> Predict
+        </button>
+      </div>
+      <div id="predictorResult" class="result-card hidden">
+        <p class="result-label">REQUIRED SGPA</p>
+        <h2 id="predSgpa" class="result-value">0.00</h2>
+        <div id="predDifficulty" class="difficulty-badge"></div>
+        <p id="predMessage" class="muted" style="margin-top:12px"></p>
+      </div>
+    </div>
+
+    <!-- ── GRADE PLANNER ── -->
+    <div class="tool-panel hidden" id="tool-planner">
+      <div class="card">
+        <h3 class="card-title"><i class="fa-solid fa-flask"></i> Grade Planner / What-If Simulator</h3>
+        <p class="card-desc">Simulate grades for future subjects to see your projected SGPA.</p>
+        <div id="plannerSubjects">
+          <div class="planner-row" data-index="0">
+            <input type="text" class="form-input plan-name" placeholder="Subject name" />
+            <input type="number" class="form-input plan-credit" placeholder="Credits" min="1" max="6" />
+            <div class="chip-group plan-grades">
+              <button class="chip grade-chip" data-grade="O">O</button>
+              <button class="chip grade-chip" data-grade="E">E</button>
+              <button class="chip grade-chip" data-grade="A">A</button>
+              <button class="chip grade-chip" data-grade="B">B</button>
+              <button class="chip grade-chip" data-grade="C">C</button>
+              <button class="chip grade-chip" data-grade="D">D</button>
+              <button class="chip grade-chip" data-grade="U">U</button>
+            </div>
+            <button class="btn-icon remove-planner-row" title="Remove"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+        </div>
+        <div class="action-row" style="margin-top:16px">
+          <button class="btn-secondary" id="addPlannerRow">
+            <i class="fa-solid fa-plus"></i> Add Subject
+          </button>
+          <button class="btn-primary" id="calcPlannerBtn">
+            <i class="fa-solid fa-calculator"></i> Calculate Projected SGPA
+          </button>
+          <button class="btn-ghost" id="resetPlannerBtn">
+            <i class="fa-solid fa-rotate-left"></i> Reset
+          </button>
+        </div>
+      </div>
+      <div id="plannerResult" class="result-card hidden">
+        <p class="result-label">PROJECTED SGPA</p>
+        <h2 id="plannerSgpa" class="result-value">0.00</h2>
+        <p id="plannerMsg" class="muted"></p>
+      </div>
+    </div>
+
+    <!-- ── ATTENDANCE CALCULATOR ── -->
+    <div class="tool-panel hidden" id="tool-attendance">
+      <div class="card">
+        <h3 class="card-title"><i class="fa-solid fa-user-check"></i> Attendance Calculator</h3>
+        <p class="card-desc">Know exactly how many classes you can miss or need to attend.</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Classes Attended</label>
+            <input type="number" id="att-attended" class="form-input" placeholder="e.g. 60" min="0" />
+          </div>
+          <div class="form-group">
+            <label>Total Classes Held</label>
+            <input type="number" id="att-total" class="form-input" placeholder="e.g. 80" min="0" />
+          </div>
+        </div>
+        <button class="btn-primary" id="calcAttendanceBtn">
+          <i class="fa-solid fa-calculator"></i> Calculate
+        </button>
+      </div>
+      <div id="attendanceResult" class="hidden">
+        <div class="att-current-card">
+          <p class="result-label">CURRENT ATTENDANCE</p>
+          <h2 id="attCurrentPct" class="result-value">0%</h2>
+          <div id="attStatus" class="att-status"></div>
+        </div>
+        <div class="att-details-grid">
+          <div class="att-detail-card">
+            <div class="att-detail-icon red"><i class="fa-solid fa-times-circle"></i></div>
+            <p class="att-detail-label">Can Still Miss</p>
+            <h3 id="attCanMiss">—</h3>
+            <p class="muted">to stay at 75%</p>
+          </div>
+          <div class="att-detail-card">
+            <div class="att-detail-icon orange"><i class="fa-solid fa-exclamation-circle"></i></div>
+            <p class="att-detail-label">Need to Attend</p>
+            <h3 id="attNeed75">—</h3>
+            <p class="muted">to reach 75%</p>
+          </div>
+          <div class="att-detail-card">
+            <div class="att-detail-icon blue"><i class="fa-solid fa-check-circle"></i></div>
+            <p class="att-detail-label">Need to Attend</p>
+            <h3 id="attNeed80">—</h3>
+            <p class="muted">to reach 80%</p>
+          </div>
+          <div class="att-detail-card">
+            <div class="att-detail-icon green"><i class="fa-solid fa-star"></i></div>
+            <p class="att-detail-label">Need to Attend</p>
+            <h3 id="attNeed85">—</h3>
+            <p class="muted">to reach 85%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── GRADE REQUIREMENT ── -->
+    <div class="tool-panel hidden" id="tool-gradeReq">
+      <div class="card">
+        <h3 class="card-title"><i class="fa-solid fa-graduation-cap"></i> Grade Requirement Calculator</h3>
+        <p class="card-desc">Find the minimum grades needed to achieve your target SGPA.</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Target SGPA</label>
+            <input type="number" id="gr-target-sgpa" class="form-input" placeholder="e.g. 8.50" min="0" max="10" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label>Number of Subjects</label>
+            <input type="number" id="gr-subjects" class="form-input" placeholder="e.g. 6" min="1" max="15" />
+          </div>
+          <div class="form-group">
+            <label>Credits per Subject (avg)</label>
+            <input type="number" id="gr-credits" class="form-input" placeholder="e.g. 3" min="1" max="6" step="0.5" />
+          </div>
+        </div>
+        <button class="btn-primary" id="calcGradeReqBtn">
+          <i class="fa-solid fa-calculator"></i> Calculate
+        </button>
+      </div>
+      <div id="gradeReqResult" class="card hidden">
+        <h3 class="card-title">Recommended Grade Distribution</h3>
+        <div id="gradeReqContent"></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══════════════ ABOUT ══════════════ -->
+  <section id="aboutSection" class="page-section hidden">
+    <div class="about-card card">
+      <div class="about-avatar">
+        <i class="fa-solid fa-user-graduate"></i>
+      </div>
+      <h2 class="about-name">Saswat Dixit</h2>
+      <p class="about-role">Silicon University | B.Tech CSE</p>
+      <p class="about-bio">
+        Passionate about DSA, problem-solving, and software development.
+        Built Acadelytics to make academic tracking effortless for fellow Siliconites.
+        Currently focused on building strong programming fundamentals and real-world projects.
+      </p>
+      <div class="social-row">
+        <a href="https://www.linkedin.com/in/saswatdixit/" target="_blank" class="social-btn" aria-label="LinkedIn">
+          <i class="fa-brands fa-linkedin"></i>
+        </a>
+        <a href="https://github.com/FireStormy1" target="_blank" class="social-btn" aria-label="GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+        <a href="mailto:saswatdixit01@gmail.com" class="social-btn" aria-label="Email">
+          <i class="fa-solid fa-envelope"></i>
+        </a>
+        <a href="https://leetcode.com/u/FireStormy/" target="_blank" class="social-btn" aria-label="LeetCode">
+          <i class="fa-solid fa-code"></i>
+        </a>
+      </div>
+      <div class="about-formula card" style="margin-top:24px;text-align:left">
+        <h4 style="margin-bottom:12px"><i class="fa-solid fa-function"></i> Formulas Used</h4>
+        <div class="formula-box">
+          <p><strong>SGPA</strong> = Σ(Credit × Grade Points) / Σ Credits</p>
+          <p><strong>CGPA</strong> = Σ(SGPA of all semesters) / Total Semesters</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Toast notification -->
+<div id="toast" class="toast hidden">
+  <i class="fa-solid fa-check-circle"></i>
+  <span id="toastMsg">Saved!</span>
+</div>
+
+<script src="./data.js"></script>
+<script src="./script.js"></script>
+</body>
+</html>
